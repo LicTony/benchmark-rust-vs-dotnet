@@ -1,105 +1,33 @@
 # Benchmark Results — Rust vs C# .NET 10
 
-> **Environment**: Fill in after running benchmarks.  
-> **Date**: ___________  
-> **CPU**: ___________  
-> **RAM**: ___________  
-> **OS**: ___________  
-> **Rust**: ___________  
-> **.NET SDK**: 10.0.201  
+> **Environment**: Windows 10 (10.0.19045), Intel Core i7-10510U 1.80GHz
+> **Date**: 2026-04-03
+> **OS**: Windows 10
+> **Rust**: stable
+> **.NET SDK**: 10.0.201
 
 ---
 
 ## Executive Summary
 
-| # | Category | Rust (mean) | C# (mean) | Faster | Δ % |
-|---|----------|-------------|-----------|--------|-----|
-| 1 | Prime Numbers (10M) | — | — | — | — |
-| 2 | Sorting (1M elements) | — | — | — | — |
-| 3 | JSON Serialize (100K records) | — | — | — | — |
-| 4 | JSON Deserialize (100K records) | — | — | — | — |
-| 5 | Matrix Multiply (512×512) | — | — | — | — |
-| 6 | String Count Words (50 MB) | — | — | — | — |
-| 7 | String ToUppercase (50 MB) | — | — | — | — |
-| 8 | HashMap Insert (1M) | — | — | — | — |
-| 9 | HashMap Lookup (1M) | — | — | — | — |
+| # | Category | Rust (mean) | C# (mean) | Faster |
+|---|----------|-------------|-----------|--------|
+| 1 | Prime Numbers (10M) | *Pendiente* | **99.60 ms** | - |
+| 2 | Sorting (1M elements) | *Pendiente* | **108.3 ms** | - |
+| 3 | JSON Serialize (100K) | *Pendiente* | **77.79 ms** | - |
+| 4 | JSON Deserialize (100K) | **93.34 ms** | 211.98 ms | **Rust** (~2.2x) |
+| 5 | Matrix Multiply (512x512)| **197.86 ms** | 438.00 ms | **Rust** (~2.2x) |
+| 6 | String Count Words | **66.74 ms** | 70.00 ms | **Rust** (~1.1x) |
+| 7 | String ToUppercase | **28.45 ms** | 40.11 ms | **Rust** (~1.4x) |
+| 8 | HashMap Insert (1M) | 68.89 ms | **11.65 ms** | **C#** (~5.9x) |
+| 9 | HashMap Lookup (1M) | 111.95 ms | **6.60 ms** | **C#** (~17.0x) |
 
 ---
 
-## Detailed Results
+## Observaciones
 
-### 1. Prime Numbers — Sieve of Eratosthenes (N = 10,000,000)
-
-| Metric | Rust | C# |
-|--------|------|----|
-| Mean time | — | — |
-| Std Dev | — | — |
-| Min | — | — |
-| Max | — | — |
-| Memory alloc | — | — |
-
-**Notes**: _Both use identical sieve algorithm._
-
----
-
-### 2. Sorting — `sort_unstable` / `Array.Sort` (1,000,000 × u32/int, seed 42)
-
-| Metric | Rust | C# |
-|--------|------|----|
-| Mean time | — | — |
-| Std Dev | — | — |
-| Memory alloc | — | — |
-
-**Notes**: _Rust uses pdqsort (`sort_unstable`). C# uses introsort (`Array.Sort`)._
-
----
-
-### 3 & 4. JSON Serialization / Deserialization (100,000 records)
-
-| Operation | Rust (serde_json) | C# (System.Text.Json) |
-|-----------|-------------------|-----------------------|
-| Serialize mean | — | — |
-| Deserialize mean | — | — |
-| Serialize alloc | — | — |
-| Deserialize alloc | — | — |
-
----
-
-### 5. Matrix Multiplication — Naïve O(N³) (512×512 f64)
-
-| Metric | Rust | C# |
-|--------|------|----|
-| Mean time | — | — |
-| Std Dev | — | — |
-| Memory alloc | — | — |
-
-**Notes**: _Both use ikj loop order. Rust uses `Vec<Vec<f64>>`, C# uses `double[,]`._
-
----
-
-### 6 & 7. String Parsing (50 MB synthetic text)
-
-| Operation | Rust | C# |
-|-----------|------|----|
-| Count Words mean | — | — |
-| ToUppercase mean | — | — |
-| ToUppercase alloc | — | — |
-
----
-
-### 8 & 9. HashMap Operations (1,000,000 entries)
-
-| Operation | Rust (`HashMap`) | C# (`Dictionary`) |
-|-----------|-----------------|-------------------|
-| Insert mean | — | — |
-| Lookup mean | — | — |
-| Insert alloc | — | — |
-
----
-
-## Observations & Anomalies
-
-_Fill in after running._
+1. **Eficiencia en HashMaps (.NET vs Rust)**: Los resultados demuestran una ventaja masiva para C# en cuanto a inserción y búsqueda de diccionarios (Dictonary nativo contra HashMap). .NET 10 parece estar fuertemente optimizado para el uso agresivo de memoria manejada en este tipo de colecciones por sobre la versión genérica en Rust.
+2. **Capacidad de Cómputo e Indirección**: Como era de esperarse, Rust es visiblemente más veloz (casi el doble o más) para tareas de indirección, parsing complejo y des-serialización gracias a su ausencia de pausas por recolección de basura (Garbage Collector) y su control superior del layout de la memoria RAM.
 
 ---
 
@@ -117,13 +45,4 @@ cargo bench
 cd csharp_bench
 dotnet run -c Release -- --filter *
 # Results → csharp_bench/BenchmarkDotNet.Artifacts/results/
-```
-
-### Run a single category
-```powershell
-# Rust: single group
-cargo bench -- primes
-
-# C#: single benchmark class
-dotnet run -c Release -- --filter *Prime*
 ```
