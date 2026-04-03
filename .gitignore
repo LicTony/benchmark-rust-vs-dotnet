@@ -1,0 +1,58 @@
+# ==========================================
+# Rust / Cargo
+# ==========================================
+/rust_bench/target/
+**/*.rs.bk
+
+# Cargo.lock is typically committed for binaries, 
+# but uncomment the next line if you want to ignore it
+# Cargo.lock
+
+# ==========================================
+# C# / .NET
+# ==========================================
+# Binaries and build artifacts
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/.vsix/
+
+# BenchmarkDotNet artifacts
+**/BenchmarkDotNet.Artifacts/
+
+# User-specific files
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# IDE temp files
+*.suo
+*.user
+*.userenv
+
+# ==========================================
+# OS Generated
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
